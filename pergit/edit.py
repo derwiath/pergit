@@ -159,7 +159,8 @@ def create_new_changelist(base_branch, workspace_dir, dry_run=False):
         return (0, "new")
 
     # Prepare the changelist spec content
-    spec_content = f"Change: new\n\nDescription:\n\t{description}\n"
+    tabbed_description = "\n\t".join(description.splitlines())
+    spec_content = f"Change: new\n\nDescription:\n\t{tabbed_description}\n"
 
     # Create the changelist using p4 change, pass description via stdin
     try:
