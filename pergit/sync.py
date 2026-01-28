@@ -247,10 +247,10 @@ def git_changelist_of_last_commit(workspace_dir: str) -> int | None:
         return None
 
     msg = res.stdout[0]
-    pattern = r"(\d+): p4 sync //\.\.\.@\1"
+    pattern = r"^(\d+|pergit): p4 sync //\.\.\.@(\d+)$"
     match = re.search(pattern, msg)
     if match:
-        return int(match.group(1))
+        return int(match.group(2))
     else:
         return None
 
@@ -389,7 +389,7 @@ def sync_command(args: argparse.Namespace) -> int:
             return 1
         print('')
 
-    commit_msg = '%s: p4 sync //...@%s' % (args.changelist, args.changelist)
+    commit_msg = 'pergit: p4 sync //...@%s' % (args.changelist)
     if not git_commit(commit_msg, workspace_dir, allow_empty=True):
         print('Failed to commit files to git')
         return 1

@@ -147,12 +147,28 @@ class TestGitCommit(unittest.TestCase):
 
 class TestGitChangelistOfLastCommit(unittest.TestCase):
     @mock.patch('pergit.sync.run_with_output')
-    def test_extracts_changelist(self, mock_rwo):
+    def test_extracts_changelist_nr(self, mock_rwo):
         mock_rwo.return_value = make_run_result(stdout=[
             '12345: p4 sync //...@12345'
         ])
         result = git_changelist_of_last_commit('/ws')
         self.assertEqual(result, 12345)
+
+    @mock.patch('pergit.sync.run_with_output')
+    def test_extracts_changelist_pergit(self, mock_rwo):
+        mock_rwo.return_value = make_run_result(stdout=[
+            'pergit: p4 sync //...@12345'
+        ])
+        result = git_changelist_of_last_commit('/ws')
+        self.assertEqual(result, 12345)
+
+    @mock.patch('pergit.sync.run_with_output')
+    def test_extracts_changelist_fail(self, mock_rwo):
+        mock_rwo.return_value = make_run_result(stdout=[
+            'pergot: p4 sync //...@12345'
+        ])
+        result = git_changelist_of_last_commit('/ws')
+        self.assertEqual(result, None)
 
     @mock.patch('pergit.sync.run_with_output')
     def test_no_match(self, mock_rwo):
